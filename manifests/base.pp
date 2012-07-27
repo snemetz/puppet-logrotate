@@ -3,35 +3,35 @@
 # Examples
 #
 #   include logrotate::base
-class logrotate::base {
-  package { 'logrotate':
-    ensure => latest,
-  }
+class logrotate::base inherits logrotate::params {
+	package {
+		'logrotate' :
+			ensure => latest,
+	}
+	
+	File {
+		owner => 'root',
+		group => 'root',
+		require => Package['logrotate'],
+	}
+	
+	file {
+		'/etc/logrotate.conf' :
+			ensure => file,
+			mode => '0444',
+			source => "${source_server}/etc/logrotate.conf";
 
-  File {
-    owner   => 'root',
-    group   => 'root',
-    require => Package['logrotate'],
-  }
+		'/etc/logrotate.d' :
+			ensure => directory,
+			mode => '0755' ;
 
-  file {
-    '/etc/logrotate.conf':
-      ensure  => file,
-      mode    => '0444',
-      source  => 'puppet:///modules/logrotate/etc/logrotate.conf';
-    '/etc/logrotate.d':
-      ensure  => directory,
-      mode    => '0755';
-    '/etc/cron.daily/logrotate':
-      ensure  => file,
-      mode    => '0555',
-      source  => 'puppet:///modules/logrotate/etc/cron.daily/logrotate';
-  }
-
-  case $::operatingsystem {
-    'Debian','Ubuntu': {
-      include logrotate::defaults::debian
-    }
-    default: { }
-  }
+		'/etc/cron.daily/logrotate' :
+			ensure => file,
+			mode => '0555',
+			source => "${source_server}/etc/cron.daily/logrotate${config_postfix}" ;
+	}
+	
+	if $os_metatype {
+		include "logrotate::defaults::${os_metatype}"
+	}
 }
