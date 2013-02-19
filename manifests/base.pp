@@ -31,7 +31,16 @@ class logrotate::base inherits logrotate::params {
 			source => "${source_server}/etc/cron.daily/logrotate${config_postfix}" ;
 	}
 	
-	if $os_metatype {
-		include "logrotate::defaults::${os_metatype}"
-	}
+  case $::osfamily {
+    'Debian': {
+      include logrotate::defaults::debian
+    }
+    'RedHat': {
+      include logrotate::defaults::redhat
+    }
+    'SuSE': {
+      include logrotate::defaults::suse
+    }
+    default: { }
+  }
 }
