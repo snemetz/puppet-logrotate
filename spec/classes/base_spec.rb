@@ -12,6 +12,7 @@ describe 'logrotate::base' do
       'group'   => 'root',
       'mode'    => '0444',
       'source'  => 'puppet:///modules/logrotate/etc/logrotate.conf',
+      'require' => 'Package[logrotate]',
     })
 
     should contain_file('/etc/logrotate.d').with({
@@ -19,6 +20,7 @@ describe 'logrotate::base' do
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0755',
+      'require' => 'Package[logrotate]',
     })
 
     should contain_file('/etc/cron.daily/logrotate').with({
@@ -26,6 +28,7 @@ describe 'logrotate::base' do
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0555',
+      'require' => 'Package[logrotate]',
     })
   end
 
@@ -49,6 +52,7 @@ describe 'logrotate::base' do
 
   context 'on Gentoo' do
     let(:facts) { {:operatingsystem => 'Gentoo'} }
+		let(:facts) { {:osfamily => 'Linux'} }
   	it do
   		expect {
 				should_not include_class('logrotate::defaults::debian')
