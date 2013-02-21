@@ -1,5 +1,4 @@
 #!/bin/sh
-export TMPDIR=/var/spool/logrotate/tmp
 
 /usr/sbin/logrotate /etc/logrotate.conf
 EXITVALUE=$?
