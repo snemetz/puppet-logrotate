@@ -22,7 +22,7 @@ describe 'logrotate::rule' do
         'group'   => 'root',
         'ensure'  => 'present',
         'mode'    => '0440',
-      }).with_content(%r{^/var/log/foo.log {\n}\n})
+      }).with_content(%r(^/var/log/foo.log {\n}\n))
     end
 
     context 'with an array path' do
