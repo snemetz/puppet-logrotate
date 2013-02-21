@@ -12,12 +12,13 @@ class logrotate::base {
   File {
     owner => 'root',
     group => 'root',
+    require => Package['logrotate']
   }
 
   package { 'logrotate':
     ensure => $logrotate::params::package_status,
   }
-    ->
+
   file {
     $logrotate::params::config_file:
       ensure => file,
