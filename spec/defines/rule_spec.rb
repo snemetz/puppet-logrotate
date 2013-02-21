@@ -28,9 +28,7 @@ describe 'logrotate::rule' do
     context 'with an array path' do
       let (:params) { {:path => ['/var/log/foo1.log','/var/log/foo2.log']} }
         it do
-          should contain_file('/etc/logrotate.d/test').with_content(
-        	%r~^/var/log/foo1.log /var/log/foo2.log \{\n\}\n~
-          )
+          should contain_file('/etc/logrotate.d/test').with_content(%r~^/var/log/foo1.log /var/log/foo2.log \{\n\}\n~)
         end
     end
 
