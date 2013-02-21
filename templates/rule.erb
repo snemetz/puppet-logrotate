@@ -1,0 +1,68 @@
+<%= scope.lookupvar('logrotate::params::disclaimer') if has_variable?('logrotate::params::disclaimer') -%>
+<%
+  opts = []
+
+  if @path.kind_of?(Array)
+    rpath = @path.join(' ')
+  else
+    rpath = @path
+  end
+
+  if @_create
+    if @_create == 'create'
+      opts << [@_create, @create_mode, @create_owner, @create_group].compact.reject { |r|
+        r == 'undef'
+      }.join(' ')
+    else
+      opts << @_create
+    end
+  end
+
+  # booleans
+  options_bool = %w{
+    compress copy copytruncate delaycompress dateext
+    missingok  sharedscripts shred
+  }
+  
+  # regular opts
+  options = %w{_mail _olddir _maillast _mailfirst _rotate_every _ifempty}
+  
+  options_bool.each do |option|
+		unless (option_value = instance_variable_get("@#{option}")).nil?
+			raise Puppet::ParseError, "Logrotate: #{option} must be true or false!" unless option_value == !!option_value
+			opts << (option_value ? option : "no#{option}")
+		end
+  end
+  
+  options.each do |option|
+		if option_value = instance_variable_get("@#{option}")
+			opts << option_value
+		end 
+  end
+
+  %w{
+  		compresscmd compressext compressoptions dateformat extension
+  		maxage minsize rotate size shredcycles start
+  		uncompresscmd
+  }.each do |option|
+		if option_value = instance_variable_get("@#{option}")
+			opts << "#{option} #{option_value}"
+		end
+  end
+
+-%>
+<%= rpath %> {
+<% opts.each do |opt| -%>
+  <%= opt %>
+<% end -%>
+<%-
+  # scripts  
+  %w{postrotate prerotate firstaction lastaction}.each do |option|
+  		if option_value = instance_variable_get("@#{option}")
+-%>
+	<%= option %>
+		<%=	option_value %>
+	endscript
+<%		end -%>
+<% end -%>
+}

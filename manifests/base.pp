@@ -3,44 +3,44 @@
 # Examples
 #
 #   include logrotate::base
-class logrotate::base inherits logrotate::params {
+class logrotate::base {
+  include logrotate::params
+
+  # puppet file server
+  $pserver = $logrotate::params::puppet_file_server
+
+  File {
+    owner => 'root',
+    group => 'root',
+  }
+
 	package {
 		'logrotate' :
-			ensure => latest,
+			ensure => $logrotate::params::package_status,
 	}
-	
-	File {
-		owner => 'root',
-		group => 'root',
-		require => Package['logrotate'],
-	}
-	
+	 ->
 	file {
-		'/etc/logrotate.conf' :
+    $logrotate::params::config_file:
 			ensure => file,
-			mode => '0444',
-			source => "${source_server}/etc/logrotate.conf";
+			mode   => '0444',
+			source => "${pserver}/etc/logrotate.conf";
 
-		'/etc/logrotate.d' :
+    $logrotate::params::config_dir:
 			ensure => directory,
-			mode => '0755' ;
+			mode   => '0755' ;
 
-		'/etc/cron.daily/logrotate' :
+    $logrotate::params::cron_file:
 			ensure => file,
-			mode => '0555',
-			source => "${source_server}/etc/cron.daily/logrotate${config_postfix}" ;
+			mode   => '0555',
+			source => "${pserver}/etc/cron.daily/logrotate${logrotate::params::osfamily_postfix}" ;
 	}
 	
   case $::osfamily {
-    'Debian': {
-      include logrotate::defaults::debian
+    'Debian', 'RedHat', 'SuSE': {
+      include "logrotate::defaults::${logrotate::params::osfamily_lowcase}"
     }
-    'RedHat': {
-      include logrotate::defaults::redhat
+    default: {
+      fail("This OS (${::osfamily}) is not supported")
     }
-    'SuSE': {
-      include logrotate::defaults::suse
-    }
-    default: { }
   }
 }

@@ -107,43 +107,45 @@
 #     postrotate   => '/etc/init.d/nginx restart',
 #   }
 define logrotate::rule(
-                        $path            = 'undef',
-                        $ensure          = 'present',
-                        $compress        = 'undef',
-                        $compresscmd     = 'undef',
-                        $compressext     = 'undef',
-                        $compressoptions = 'undef',
-                        $copy            = 'undef',
-                        $copytruncate    = 'undef',
-                        $create          = 'undef',
-                        $create_mode     = 'undef',
-                        $create_owner    = 'undef',
-                        $create_group    = 'undef',
-                        $dateext         = 'undef',
-                        $dateformat      = 'undef',
-                        $delaycompress   = 'undef',
-                        $extension       = 'undef',
-                        $ifempty         = 'undef',
-                        $mail            = 'undef',
-                        $mailfirst       = 'undef',
-                        $maillast        = 'undef',
-                        $maxage          = 'undef',
-                        $minsize         = 'undef',
-                        $missingok       = 'undef',
-                        $olddir          = 'undef',
-                        $postrotate      = 'undef',
-                        $prerotate       = 'undef',
-                        $firstaction     = 'undef',
-                        $lastaction      = 'undef',
-                        $rotate          = 'undef',
-                        $rotate_every    = 'undef',
-                        $size            = 'undef',
-                        $sharedscripts   = 'undef',
-                        $shred           = 'undef',
-                        $shredcycles     = 'undef',
-                        $start           = 'undef',
-                        $uncompresscmd   = 'undef'
-                        ) {
+	$path            = undef,
+	$ensure          = present,
+	$compress        = undef,
+	$compresscmd     = undef,
+	$compressext     = undef,
+	$compressoptions = undef,
+	$copy            = undef,
+	$copytruncate    = undef,
+	$create          = undef,
+	$create_mode     = undef,
+	$create_owner    = undef,
+	$create_group    = undef,
+	$dateext         = undef,
+	$dateformat      = undef,
+	$delaycompress   = undef,
+	$extension       = undef,
+	$ifempty         = undef,
+	$mail            = undef,
+	$mailfirst       = undef,
+	$maillast        = undef,
+	$maxage          = undef,
+	$minsize         = undef,
+	$missingok       = undef,
+	$olddir          = undef,
+	$postrotate      = undef,
+	$prerotate       = undef,
+	$firstaction     = undef,
+	$lastaction      = undef,
+	$rotate          = undef,
+	$rotate_every    = undef,
+	$size            = undef,
+	$sharedscripts   = undef,
+	$shred           = undef,
+	$shredcycles     = undef,
+	$start           = undef,
+	$uncompresscmd   = undef
+) {
+
+  include logrotate::params
 
   #############################################################################
   # SANITY CHECK VALUES
@@ -154,7 +156,7 @@ define logrotate::rule(
 
   case $ensure {
     'present': {
-      if $path == 'undef' {
+      if !$path {
         fail("Logrotate::Rule[${name}]: path not specified")
       }
     }
@@ -163,115 +165,43 @@ define logrotate::rule(
       fail("Logrotate::Rule[${name}]: invalid ensure value")
     }
   }
-
-  case $compress {
-    'undef': {}
-    true: { $_compress = 'compress' }
-    false: { $_compress = 'nocompress' }
-    default: {
-      fail("Logrotate::Rule[${name}]: compress must be a boolean")
-    }
-  }
-
-  case $copy {
-    'undef': {}
-    true: { $_copy = 'copy' }
-    false: { $_copy = 'nocopy' }
-    default: {
-      fail("Logrotate::Rule[${name}]: copy must be a boolean")
-    }
-  }
-
-  case $copytruncate {
-    'undef': {}
-    true: { $_copytruncate = 'copytruncate' }
-    false: { $_copytruncate = 'nocopytruncate' }
-    default: {
-      fail("Logrotate::Rule[${name}]: copytruncate must be a boolean")
-    }
-  }
-
+  
   case $create {
-    'undef': {}
+    undef: { $_create = undef }
     true: { $_create = 'create' }
     false: { $_create = 'nocreate' }
     default: {
-      fail("Logrotate::Rule[${name}]: create must be a boolean")
-    }
-  }
-
-  case $delaycompress {
-    'undef': {}
-    true: { $_delaycompress = 'delaycompress' }
-    false: { $_delaycompress = 'nodelaycompress' }
-    default: {
-      fail("Logrotate::Rule[${name}]: delaycompress must be a boolean")
-    }
-  }
-
-  case $dateext {
-    'undef': {}
-    true: { $_dateext = 'dateext' }
-    false: { $_dateext = 'nodateext' }
-    default: {
-      fail("Logrotate::Rule[${name}]: dateext must be a boolean")
+      fail("Logrotate::Rule[${name}]: create must be true or false")
     }
   }
 
   case $mail {
-    'undef': {}
+    undef: { $_mail = undef }
     false: { $_mail = 'nomail' }
     default: {
       $_mail = "mail ${mail}"
     }
   }
 
-  case $missingok {
-    'undef': {}
-    true: { $_missingok = 'missingok' }
-    false: { $_missingok = 'nomissingok' }
-    default: {
-      fail("Logrotate::Rule[${name}]: missingok must be a boolean")
-    }
-  }
-
   case $olddir {
-    'undef': {}
+    undef: { $_olddir = undef }
     false: { $_olddir = 'noolddir' }
     default: {
       $_olddir = "olddir ${olddir}"
     }
   }
 
-  case $sharedscripts {
-    'undef': {}
-    true: { $_sharedscripts = 'sharedscripts' }
-    false: { $_sharedscripts = 'nosharedscripts' }
-    default: {
-      fail("Logrotate::Rule[${name}]: sharedscripts must be a boolean")
-    }
-  }
-
-  case $shred {
-    'undef': {}
-    true: { $_shred = 'shred' }
-    false: { $_shred = 'noshred' }
-    default: {
-      fail("Logrotate::Rule[${name}]: shred must be a boolean")
-    }
-  }
-
   case $ifempty {
-    'undef': {}
+    undef: { $_ifempty = undef }
     true: { $_ifempty = 'ifempty' }
     false: { $_ifempty = 'notifempty' }
     default: {
-      fail("Logrotate::Rule[${name}]: ifempty must be a boolean")
+      fail("Logrotate::Rule[${name}]: ifempty must be true of false")
     }
   }
-
+  
   case $rotate_every {
-    'undef': {}
+    undef: { $_rotate_every = undef }
     'day': { $_rotate_every = 'daily' }
     'week': { $_rotate_every = 'weekly' }
     'month': { $_rotate_every = 'monthly' }
@@ -283,7 +213,7 @@ define logrotate::rule(
   }
 
   case $maxage {
-    'undef': {}
+    undef: {}
     /^\d+$/: {}
     default: {
       fail("Logrotate::Rule[${name}]: maxage must be an integer")
@@ -291,7 +221,7 @@ define logrotate::rule(
   }
 
   case $minsize {
-    'undef': {}
+    undef: {}
     /^\d+[kMG]?$/: {}
     default: {
       fail("Logrotate::Rule[${name}]: minsize must match /\\d+[kMG]?/")
@@ -299,7 +229,7 @@ define logrotate::rule(
   }
 
   case $rotate {
-    'undef': {}
+    undef: {}
     /^\d+$/: {}
     default: {
       fail("Logrotate::Rule[${name}]: rotate must be an integer")
@@ -307,7 +237,7 @@ define logrotate::rule(
   }
 
   case $size {
-    'undef': {}
+    undef: {}
     /^\d+[kMG]?$/: {}
     default: {
       fail("Logrotate::Rule[${name}]: size must match /\\d+[kMG]?/")
@@ -315,7 +245,7 @@ define logrotate::rule(
   }
 
   case $shredcycles {
-    'undef': {}
+    undef: {}
     /^\d+$/: {}
     default: {
       fail("Logrotate::Rule[${name}]: shredcycles must be an integer")
@@ -323,7 +253,7 @@ define logrotate::rule(
   }
 
   case $start {
-    'undef': {}
+    undef: {}
     /^\d+$/: {}
     default: {
       fail("Logrotate::Rule[${name}]: start must be an integer")
@@ -331,7 +261,7 @@ define logrotate::rule(
   }
 
   case $mailfirst {
-    'undef',false: {}
+    undef, false: { $_mailfirst = undef }
     true: {
       if $maillast == true {
         fail("Logrotate::Rule[${name}]: Can't set both mailfirst and maillast")
@@ -340,29 +270,29 @@ define logrotate::rule(
       $_mailfirst = 'mailfirst'
     }
     default: {
-      fail("Logrotate::Rule[${name}]: mailfirst must be a boolean")
+      fail("Logrotate::Rule[${name}]: mailfirst must be true or false")
     }
   }
 
   case $maillast {
-    'undef',false: {}
+    undef, false: { $_maillast = undef }
     true: {
       $_maillast = 'maillast'
     }
     default: {
-      fail("Logrotate::Rule[${name}]: maillast must be a boolean")
+      fail("Logrotate::Rule[${name}]: maillast must be true or false")
     }
   }
 
-  if ($create_group != 'undef') and ($create_owner == 'undef') {
+  if ($create_group and !$create_owner) {
     fail("Logrotate::Rule[${name}]: create_group requires create_owner")
   }
 
-  if ($create_owner != 'undef') and ($create_mode == 'undef') {
+  if ($create_owner and !$create_mode) {
     fail("Logrotate::Rule[${name}]: create_owner requires create_mode")
   }
 
-  if ($create_mode != 'undef') and ($create != true) {
+  if ($create_mode and !$create) {
     fail("Logrotate::Rule[${name}]: create_mode requires create")
   }
 
@@ -371,12 +301,15 @@ define logrotate::rule(
 
   include logrotate::base
 
-  file { "/etc/logrotate.d/${name}":
+  Class['Logrotate::Base']
+    ->
+  file { "${logrotate::params::config_dir}/${name}":
     ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
-    mode    => '0444',
-    content => template('logrotate/etc/logrotate.d/rule.erb'),
+    mode    => '0440',
+    content => template('logrotate/rule.erb'),
     require => Class['logrotate::base'],
   }
+
 }
