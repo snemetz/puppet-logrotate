@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'logrotate::rule' do
+	let(:facts) { {:osfamily => 'RedHat'} }
+		
   context 'with an alphanumeric title' do
     let(:title) { 'test' }
 
@@ -19,15 +21,15 @@ describe 'logrotate::rule' do
         'owner'   => 'root',
         'group'   => 'root',
         'ensure'  => 'present',
-        'mode'    => '0444',
-      }).with_content("/var/log/foo.log {\n}\n")
+        'mode'    => '0440',
+      }).with_content(%r{^/var/log/foo.log {\n}\n})
     end
 
     context 'with an array path' do
       let (:params) { {:path => ['/var/log/foo1.log','/var/log/foo2.log']} }
         it do
           should contain_file('/etc/logrotate.d/test').with_content(
-            "/var/log/foo1.log /var/log/foo2.log {\n}\n"
+        	%r(^/var/log/foo1.log /var/log/foo2.log {\n}\n)
           )
         end
     end
@@ -64,7 +66,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /compress must be a boolean/)
+        }.to raise_error(Puppet::Error, /compress must be/)
       end
     end
 
@@ -137,7 +139,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /copy must be a boolean/)
+        }.to raise_error(Puppet::Error, /copy must be/)
       end
     end
 
@@ -173,7 +175,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /copytruncate must be a boolean/)
+        }.to raise_error(Puppet::Error, /copytruncate must be/)
       end
     end
 
@@ -306,7 +308,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /create must be a boolean/)
+        }.to raise_error(Puppet::Error, /create must be/)
       end
     end
 
@@ -342,7 +344,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /dateext must be a boolean/)
+        }.to raise_error(Puppet::Error, /dateext must be/)
       end
     end
 
@@ -391,7 +393,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /delaycompress must be a boolean/)
+        }.to raise_error(Puppet::Error, /delaycompress must be/)
       end
     end
 
@@ -440,7 +442,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /ifempty must be a boolean/)
+        }.to raise_error(Puppet::Error, /ifempty must be/)
       end
     end
 
@@ -630,7 +632,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /missingok must be a boolean/)
+        }.to raise_error(Puppet::Error, /missingok must be/)
       end
     end
 
@@ -667,7 +669,7 @@ describe 'logrotate::rule' do
 
       it do
         should contain_file('/etc/logrotate.d/test') \
-          .with_content(/postrotate\n    \/bin\/true\n  endscript/)
+        	.with_content(%r{postrotate\n[\s]*/bin/true\n[\s]*endscript})
       end
     end
 
@@ -680,7 +682,7 @@ describe 'logrotate::rule' do
 
       it do
         should contain_file('/etc/logrotate.d/test') \
-          .with_content(/prerotate\n    \/bin\/true\n  endscript/)
+        	.with_content(%r{prerotate\n[\s]*/bin/true\n[\s]*endscript})
       end
     end
 
@@ -693,7 +695,7 @@ describe 'logrotate::rule' do
 
       it do
         should contain_file('/etc/logrotate.d/test') \
-          .with_content(/firstaction\n    \/bin\/true\n  endscript/)
+        	.with_content(%r{firstaction\n[\s]*/bin/true\n[\s]*endscript})
       end
     end
 
@@ -706,7 +708,7 @@ describe 'logrotate::rule' do
 
       it do
         should contain_file('/etc/logrotate.d/test') \
-          .with_content(/lastaction\n    \/bin\/true\n  endscript/)
+        	.with_content(%r{lastaction\n[\s]*/bin/true\n[\s]*endscript})
       end
     end
 
@@ -883,7 +885,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /sharedscripts must be a boolean/)
+        }.to raise_error(Puppet::Error, /sharedscripts must be/)
       end
     end
 
@@ -942,7 +944,7 @@ describe 'logrotate::rule' do
       it do
         expect {
           should contain_file('/etc/logrotate.d/test')
-        }.to raise_error(Puppet::Error, /shred must be a boolean/)
+        }.to raise_error(Puppet::Error, /shred must be/)
       end
     end
 

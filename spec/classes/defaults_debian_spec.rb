@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'logrotate::defaults::debian' do
+	let(:facts) { {:osfamily => 'Debian'} }
+		
   it do
     should contain_logrotate__rule('wtmp').with({
       'rotate_every' => 'month',

@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe 'logrotate::base' do
+  let(:facts) { {:osfamily => 'Debian'} }
+  	
   it do
-    should contain_package('logrotate').with_ensure('latest')
+    should contain_package('logrotate').with_ensure('installed')
 
     should contain_file('/etc/logrotate.conf').with({
       'ensure'  => 'file',
@@ -10,7 +12,6 @@ describe 'logrotate::base' do
       'group'   => 'root',
       'mode'    => '0444',
       'source'  => 'puppet:///modules/logrotate/etc/logrotate.conf',
-      'require' => 'Package[logrotate]',
     })
 
     should contain_file('/etc/logrotate.d').with({
@@ -18,7 +19,6 @@ describe 'logrotate::base' do
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0755',
-      'require' => 'Package[logrotate]',
     })
 
     should contain_file('/etc/cron.daily/logrotate').with({
@@ -26,8 +26,6 @@ describe 'logrotate::base' do
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0555',
-      'source'  => 'puppet:///modules/logrotate/etc/cron.daily/logrotate',
-      'require' => 'Package[logrotate]',
     })
   end
 
@@ -51,9 +49,14 @@ describe 'logrotate::base' do
 
   context 'on Gentoo' do
     let(:facts) { {:operatingsystem => 'Gentoo'} }
+  	it do
+  		expect {
+				should_not include_class('logrotate::defaults::debian')
+  		}.to raise_error(Puppet::Error, /not supported/)
+  	end
 
-    it { should_not include_class('logrotate::defaults::debian') }
-    it { should_not include_class('logrotate::defaults::redhat') }
-    it { should_not include_class('logrotate::defaults::suse') }
+#    it { should_not include_class('logrotate::defaults::debian') }
+#    it { should_not include_class('logrotate::defaults::redhat') }
+#    it { should_not include_class('logrotate::defaults::suse') }
   end
 end
