@@ -16,5 +16,5 @@ class logrotate::params {
   $cron_file   = '/etc/cron.daily/logrotate'
   $hourly_path = "${config_dir}/hourly"
 
-  $disclaimer = sprintf("%s\n%s\n", "# ***   This file is managed by Puppet    ***", "# *** Automatically generated, don't edit ***")
+  $disclaimer = sprintf("%s\n%s\n", '# ***   This file is managed by Puppet    ***', "# *** Automatically generated, don't edit ***")
 }

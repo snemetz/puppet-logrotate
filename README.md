@@ -1,6 +1,7 @@
 # Logrotate module for Puppet
 
 Travis [![Build Status](https://secure.travis-ci.org/snemetz/puppet-logrotate.png)](http://travis-ci.org/snemetz/puppet-logrotate)
+
 Internal Jenkins [![Build Status](http://cs-jenkins.barnesandnoble.com/view/Puppet/view/Modules/job/Puppet_Module_logrotate/badge/icon)](http://cs-jenkins.barnesandnoble.com/view/Puppet/view/Modules/job/Puppet_Module_logrotate/)
 
 A more Puppety way of managing logrotate configs.  Where possible, as many of

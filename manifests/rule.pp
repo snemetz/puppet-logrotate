@@ -196,7 +196,7 @@ define logrotate::rule (
     'hour', 'hourly' : {
       # $_rotate_every = 'hourly'
       include logrotate::hourly
-     } 
+    }
     'day'   : { $_rotate_every = 'daily' }
     'week'  : { $_rotate_every = 'weekly' }
     'month' : { $_rotate_every = 'monthly' }
@@ -282,9 +282,9 @@ define logrotate::rule (
 
   case $rotate_every {
     'hour', 'hourly': {
-       $realname = "${logrotate::params::hourly_path}/${name}"
-     }
-     default: { $realname = "${logrotate::params::config_dir}/${name}" }
+      $realname = "${logrotate::params::hourly_path}/${name}"
+    }
+    default: { $realname = "${logrotate::params::config_dir}/${name}" }
   }
   file { $realname:
     ensure  => $ensure,
