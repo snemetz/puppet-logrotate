@@ -10,6 +10,7 @@ class logrotate::defaults::redhat {
     create       => true,
     create_owner => 'root',
     create_group => 'utmp',
+    rotate       => 3,
   }
 
   logrotate::rule {
